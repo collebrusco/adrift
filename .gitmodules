@@ -1,0 +1,9 @@
+[submodule "lib/flgl"]
+	path = lib/flgl
+	url = https://github.com/collebrusco/flgl
+[submodule "lib/ecs"]
+	path = lib/ecs
+	url = https://github.com/collebrusco/entity-mini
+[submodule "lib/stopwatch"]
+	path = lib/stopwatch
+	url = https://github.com/collebrusco/stopwatch
