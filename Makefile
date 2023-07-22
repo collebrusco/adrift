@@ -1,0 +1,42 @@
+UNAME_S = $(shell uname -s)
+
+CC = clang
+CPP = clang++
+CFLAGS = -std=c++20 -Wall -Wextra -Wpedantic -Wno-newline-eof
+CFLAGS += -Ilib -Ilib/flgl/inc -Ilib/flgl/lib/glfw/include -Ilib/flgl/lib/glad/include -Ilib/flgl/lib/glm/ -Ilib/flgl/lib/stb
+LDFLAGS = lib/flgl/lib/glad/src/glad.o lib/flgl/lib/glfw/src/libglfw3.a
+LDFLAGS += -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa
+
+SRC = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard lib/**/**/*.cpp) $(wildcard lib/**/*.cpp) 
+OBJ = $(SRC:.cpp=.o)
+BIN = bin
+
+.PHONY: all clean subs init 
+
+run: adrift
+	$(BIN)/adrift
+
+subs:
+	git submodule update --remote --init --recursive
+
+build: libs adrift
+
+all: dirs subs libs adrift
+
+dirs:
+	mkdir -p ./$(BIN)
+
+libs:
+	cd lib/flgl/lib/glad && $(CC) -o src/glad.o -Iinclude -c src/glad.c
+	cd lib/flgl/lib/glfw && cmake . && make
+
+adrift: $(OBJ)
+	$(CPP) -o $(BIN)/adrift $^ $(LDFLAGS)
+
+%.o: %.cpp
+	$(CPP) -o $@ -c $< $(CFLAGS)
+
+clean:
+	rm -rf $(BIN) $(OBJ) 
+
+
