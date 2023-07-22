@@ -13,11 +13,17 @@ OBJ = $(SRC:.cpp=.o)
 LIBOBJ = $(LIBSRC:.cpp=.o)
 BIN = bin
 
-.PHONY: all clean subs init a r
+.PHONY: all clean subs init a r update
+
+update:
+	make clean
+	git pull
+	make dirs
+	make build
 
 r: a run
 
-run: adrift
+run: 
 	$(BIN)/adrift
 
 subs:
