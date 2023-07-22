@@ -7,7 +7,7 @@
 //
 
 #include "Adrift.h"
-#include "../res/models.h"
+#include <res/models.h>
 MESH_DEFINE_ASP
 #include <iostream>
 using namespace glm;
