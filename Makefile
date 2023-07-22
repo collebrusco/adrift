@@ -13,7 +13,9 @@ OBJ = $(SRC:.cpp=.o)
 LIBOBJ = $(LIBSRC:.cpp=.o)
 BIN = bin
 
-.PHONY: all clean subs init 
+.PHONY: all clean subs init a r
+
+r: a run
 
 run: adrift
 	$(BIN)/adrift
@@ -31,6 +33,8 @@ dirs:
 libs:
 	cd lib/flgl/lib/glad && $(CC) -o src/glad.o -Iinclude -c src/glad.c
 	cd lib/flgl/lib/glfw && cmake . && make
+
+a: adrift
 
 adrift: $(OBJ) $(LIBOBJ)
 	$(CPP) -o $(BIN)/adrift $^ $(LDFLAGS)
