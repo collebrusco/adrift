@@ -7,8 +7,10 @@ CFLAGS += -Ilib -Ilib/flgl/inc -Ilib/flgl/lib/glfw/include -Ilib/flgl/lib/glad/i
 LDFLAGS = lib/flgl/lib/glad/src/glad.o lib/flgl/lib/glfw/src/libglfw3.a
 LDFLAGS += -framework OpenGL -framework IOKit -framework CoreVideo -framework Cocoa
 
-SRC = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) $(wildcard lib/**/**/*.cpp) $(wildcard lib/**/*.cpp) 
+SRC = $(wildcard src/*.cpp) $(wildcard src/**/*.cpp) 
+LIBSRC = $(wildcard lib/**/**/*.cpp) $(wildcard lib/**/*.cpp) 
 OBJ = $(SRC:.cpp=.o)
+LIBOBJ = $(LIBSRC:.cpp=.o)
 BIN = bin
 
 .PHONY: all clean subs init 
@@ -30,7 +32,7 @@ libs:
 	cd lib/flgl/lib/glad && $(CC) -o src/glad.o -Iinclude -c src/glad.c
 	cd lib/flgl/lib/glfw && cmake . && make
 
-adrift: $(OBJ)
+adrift: $(OBJ) $(LIBOBJ)
 	$(CPP) -o $(BIN)/adrift $^ $(LDFLAGS)
 
 %.o: %.cpp
