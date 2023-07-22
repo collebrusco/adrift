@@ -41,4 +41,6 @@ adrift: $(OBJ) $(LIBOBJ)
 clean:
 	rm -rf $(BIN) $(OBJ) 
 
+trim:
+	rm -rf ./lib/flgl/lib/glfw/tests ./lib/flgl/lib/glfw/examples ./lib/flgl/lib/glm/test
 
