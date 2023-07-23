@@ -13,12 +13,11 @@
 #include "../renderer_enums.h"
 
 struct Texture {
-    TEXTURE_SLOT slot;
+    TextureName name;
     glm::ivec2 dims;
     glm::vec2 pos;
     Texture() = default;
-    Texture(TEXTURE_SLOT s, glm::ivec2 d, glm::vec2 p);
-    void sync(Shader s);
+    Texture(TextureName s, glm::ivec2 d, glm::vec2 p);
 };
 
 #endif /* texture_h */

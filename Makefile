@@ -29,7 +29,7 @@ run:
 subs:
 	git submodule update --remote --init --recursive
 
-build: libs adrift
+build: dirs libs adrift
 
 all: dirs subs libs adrift
 

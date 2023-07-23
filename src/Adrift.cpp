@@ -21,7 +21,7 @@ void Adrift::camera_init() {
     scene.addComp<DifferentialFollower>(e, player, 0.3);
     cam.setViewWidth(5.f);
     cam.update();
-    renderer.use_camera(e);
+    render_system.use_camera(e);
 }
 
 void Adrift::player_init() {
@@ -30,28 +30,35 @@ void Adrift::player_init() {
     auto const& asp = ShipTypeObject::getShip(SHIP_ASP);
     scene.addComp<Transform>(e);
     scene.addComp<Render>(e, asp.getMesh(), asp.getShader());
-    scene.addComp<Texture>(e, asp.getTexture());
-//    scene.addComp<Actor*>(e, new PlayerActor(e));
+    scene.addComp<Texture>(e, asp.getTexture());\
 }
+
 void Adrift::userCreate() {
+    meshes.reserve(MESH_LAST + 1);
+    shaders.reserve(SHADER_LAST + 1);
+    textures.reserve(TEX_LAST + 1);
     meshes[MESH_ASP] = gl.loader.UploadMesh(asp_mesh);
     meshes[MESH_TILE] = gl.std.getTileMesh();
     shaders[SHADER_SHIP] = gl.loader.UploadShader("mvp_vert", "tex_frag");
     shaders[SHADER_STARS] = gl.loader.UploadShader("fullscreen_vert", "star2d_frag");
+    textures[TEX_ATLAS] = gl.loader.UploadTexture("atlas", true);
     ShipTypeObject::initShips();
     gl.setDepthTestEnable(true);
     player_init();
     camera_init();
     bg_init();
-    fps_init(6);
+    fps_init(8);
 }
+// ================================UP         ================================
+// ================================   DATE    ================================
+// ================================       LOOP================================
 void Adrift::userUpdate(float dt) {
     if (window.keyboard[GLFW_KEY_F].pressed){
         static bool toggle = false;
         gl.setWireframe(toggle ^= 0x01);
     }
     if (window.mouse.scroll.y != 0.f) {
-        ((OrthoCamera*)renderer.fetch_camera(scene))->getViewWidth() += window.mouse.scroll.y;
+        ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() += window.mouse.scroll.y;
     }
 
     fps_sample(dt);
@@ -62,6 +69,7 @@ void Adrift::userUpdate(float dt) {
     DifferentialFollower::follower_system(scene);
 
     bg_system();
+    render_system.execute(this);
 }
 
 void Adrift::userDestroy() {
@@ -127,7 +135,7 @@ void Adrift::bg_init() {
 
 void Adrift::bg_system() {
     static vec2 pGamePos;
-    Camera* cam = renderer.fetch_camera(scene);
+    Camera* cam = render_system.fetch_camera(scene);
     shaders[SHADER_STARS].uFloat("uTime", launch_timer.read());
     shaders[SHADER_STARS].uVec2("uRes", vec2(gl.getWindow().frame.x, gl.getWindow().frame.y));
     shaders[SHADER_STARS].uFloat("uAspect", gl.getWindow().aspect);

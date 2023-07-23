@@ -13,6 +13,7 @@
 #include "ecs/ECS.h"
 #include "stopwatch/Stopwatch.h"
 #include "GameDriver.h"
+#include "RenderSystem.h"
 #include "components/all.h"
 #include "design/Ships.h"
 #include "SkySystem.h"
@@ -27,6 +28,8 @@ private:
     void userDestroy()          override;
     
     entID player;
+    RenderSystem render_system;
+
     void camera_init();
     void player_init();
     void roll_system(float dt);
