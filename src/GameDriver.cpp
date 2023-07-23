@@ -1,16 +1,16 @@
 //
-//  GameEngine.cpp
+//  GameDriver.cpp
 //  risklike
 //
 //  Created by Frank Collebrusco on 6/6/23.
 //
 //
 
-#include "GameEngine.h"
+#include "GameDriver.h"
 #include "components/all.h"
 static Graphics gl;
 
-GameEngine::GameEngine(const char *title, uint32_t w, uint32_t h) : window(gl.initCreateWindow(title, w, h)),
+GameDriver::GameDriver(const char *title, uint32_t w, uint32_t h) : window(gl.initCreateWindow(title, w, h)),
                                                                     launch_timer(ftime::SECONDS),
                                                                     delta_timer(ftime::SECONDS),
                                                                     dt(1.f/60.f),
@@ -25,17 +25,17 @@ GameEngine::GameEngine(const char *title, uint32_t w, uint32_t h) : window(gl.in
     gl.loader.setShaderPath("src/shaders/");
 }
 
-void GameEngine::exit() {
+void GameDriver::exit() {
     userDestroy();
     gl.destroy();
 }
 
-bool GameEngine::create() { 
+bool GameDriver::create() { 
     userCreate();
     return true;
 }
 
-void GameEngine::start() {
+void GameDriver::start() {
     while (!window.should_close()) {
         gl.clear();
         userUpdate(dt);
@@ -51,11 +51,11 @@ GameState::GameState(std::vector<Shader>& sh, std::vector<MeshDetails>& m, std::
                                  shaders(sh), meshes(m), textures(t), window(w), scene(sc), dt(d), launch_timer(sw)
 {}
 
-void GameEngine::Renderer::use_camera(entID cam) {
+void GameDriver::Renderer::use_camera(entID cam) {
     camera = cam;
 }
 
-Camera* GameEngine::Renderer::fetch_camera(ECS& scene) {
+Camera* GameDriver::Renderer::fetch_camera(ECS& scene) {
     Camera* cam = scene.tryGetComp<OrthoCamera>(camera);
     if (!cam)
         cam = scene.tryGetComp<PerspectiveCamera>(camera);
@@ -64,7 +64,7 @@ Camera* GameEngine::Renderer::fetch_camera(ECS& scene) {
     return cam;
 }
 
-void GameEngine::Renderer::sync_camera(ECS& scene) {
+void GameDriver::Renderer::sync_camera(ECS& scene) {
     Camera* cam = fetch_camera(scene);
     
     Transform* trans = scene.tryGetComp<Transform>(camera);
@@ -78,7 +78,7 @@ void GameEngine::Renderer::sync_camera(ECS& scene) {
     });
 }
 
-void GameEngine::Renderer::render_system(GameEngine* eng) {
+void GameDriver::Renderer::render_system(GameDriver* eng) {
     sync_camera(eng->scene);
     for (auto e : eng->scene.view<Render>()) {
         auto& render = eng->scene.getComp<Render>(e);

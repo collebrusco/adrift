@@ -1,13 +1,13 @@
 //
-//  GameEngine.h
+//  GameDriver.h
 //  risklike
 //
 //  Created by Frank Collebrusco on 6/6/23.
 //
 //
 
-#ifndef GameEngine_h
-#define GameEngine_h
+#ifndef GameDriver_h
+#define GameDriver_h
 #include "../lib/ecs/ECS.h"
 #include "../lib/flgl/inc/flgl.h"
 #include "../lib/stopwatch/Stopwatch.h"
@@ -32,11 +32,11 @@ struct GameState {
               ftime::Stopwatch&);
 };
 
-class GameEngine {
+class GameDriver {
 public:
     bool create();
     void start();
-    GameEngine(const char* title, uint32_t w = 1280, uint32_t h = 720);
+    GameDriver(const char* title, uint32_t w = 1280, uint32_t h = 720);
 
     // game state reference object
     GameState state;
@@ -56,7 +56,7 @@ public:
     public:
         void use_camera(entID e);
         Camera* fetch_camera(ECS& scene);
-        void render_system(GameEngine* eng);
+        void render_system(GameDriver* eng);
         void destroy();
     };
     Renderer renderer;
@@ -68,4 +68,4 @@ private:
     void exit();
 };
 
-#endif /* GameEngine_h */
+#endif /* GameDriver_h */

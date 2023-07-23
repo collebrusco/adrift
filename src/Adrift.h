@@ -12,18 +12,16 @@
 #include "flgl/inc/flgl_math.h"
 #include "ecs/ECS.h"
 #include "stopwatch/Stopwatch.h"
-#include "GameEngine.h"
+#include "GameDriver.h"
 #include "components/all.h"
 #include "design/Ships.h"
 #include "SkySystem.h"
 #include "ActionSystem.h"
 
-class Adrift : public GameEngine {
+class Adrift : public GameDriver {
 public:
-    Adrift() : GameEngine("adrift", 1280, 720) {}
-//                 ss(this) {}
+    Adrift() : GameDriver("adrift", 1280, 720) {}
 private:
-//    SkySystem ss;
     void userCreate()           override;
     void userUpdate(float dt)   override;
     void userDestroy()          override;
@@ -36,7 +34,6 @@ private:
     void bg_init();
     void bg_system();
     
-//    ActionSystem actionSystem;
 };
 
 #endif /* Adrift_h */
