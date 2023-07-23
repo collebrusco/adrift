@@ -45,15 +45,6 @@ void GameEngine::start() {
     }
     exit();
 }
-/*
-        vector<Shader>& shaders;
-        vector<MeshDetails>& meshes;
-        vector<TEXTURE_SLOT>& textures;
-        Window& window;
-        ECS& scene;
-        float& dt;
-        ftime::Stopwatch& launch_timer;
-*/
 
 GameState::GameState(std::vector<Shader>& sh, std::vector<MeshDetails>& m, std::vector<TEXTURE_SLOT>& t,
                                  Window& w, ECS& sc, float& d, ftime::Stopwatch& sw) :

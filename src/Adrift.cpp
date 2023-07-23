@@ -8,6 +8,7 @@
 
 #include "Adrift.h"
 #include <../res/models.h>
+#include "util/fps.h"
 MESH_DEFINE_ASP
 #include <iostream>
 using namespace glm;
@@ -42,6 +43,7 @@ void Adrift::userCreate() {
     player_init();
     camera_init();
     bg_init();
+    fps_init(6);
 }
 void Adrift::userUpdate(float dt) {
     if (window.keyboard[GLFW_KEY_F].pressed){
@@ -52,8 +54,7 @@ void Adrift::userUpdate(float dt) {
         ((OrthoCamera*)renderer.fetch_camera(scene))->getViewWidth() += window.mouse.scroll.y;
     }
 
-    static uint32_t ii = 0x100;
-    if (!--ii) {std::cout << 1 / dt << "fps\n"; ii = 0x100;}
+    fps_sample(dt);
     
 //    actionSystem.execute(dt);
     roll_system(dt);
