@@ -5,19 +5,21 @@
 //  Created by Frank Collebrusco on 6/9/23.
 //
 //
-//
-//#ifndef SkySystem_h
-//#define SkySystem_h
-//
-////#include "System.h"
-//#include "GameEngine.h"
-//
-//class SkySystem : public GameEngine::System {
-//public:
-//    SkySystem(GameEngine* h);
-//    virtual void init() override final;
-//    virtual void execute(float dt) override final;
-//};
-//
-//
-//#endif /* SkySystem_h */
+
+#ifndef SkySystem_h
+#define SkySystem_h
+
+#include "GameDriver.h"
+#include <flgl.h>
+
+class SkySystem {
+	GameDriver& home;
+	entID backdrop;
+public:
+   SkySystem(GameDriver* h);
+   void init();
+   void execute(Camera* cam);
+};
+
+
+#endif /* SkySystem_h */

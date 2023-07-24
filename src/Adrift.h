@@ -15,6 +15,7 @@
 #include "stopwatch/Stopwatch.h"
 #include "GameDriver.h"
 #include "RenderSystem.h"
+#include "SkySystem.h"
 #include "components/all.h"
 #include "design/Ships.h"
 #include "SkySystem.h"
@@ -31,13 +32,14 @@ private:
     
     entID player;
     RenderSystem render_system;
+    SkySystem sky_system;
 
     void camera_init();
     void player_init();
     void roll_system(float dt);
     void fly_system(float dt);
-    void bg_init();
-    void bg_system();
+    // void bg_init();
+    // void bg_system();
     
 };
 

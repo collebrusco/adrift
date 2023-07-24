@@ -13,7 +13,7 @@ MESH_DEFINE_ASP
 using namespace glm;
 static Graphics gl;
 
-Adrift::Adrift() : GameDriver("adrift", 1280, 720), fps(8) {}
+Adrift::Adrift() : GameDriver("adrift", 1280, 720), fps(8), sky_system(this) {}
 
 void Adrift::camera_init() {
     auto e = scene.newEntity();
@@ -48,7 +48,8 @@ void Adrift::userCreate() {
     gl.setDepthTestEnable(true);
     player_init();
     camera_init();
-    bg_init();
+    // bg_init();
+    sky_system.init();
     debug_init(10);
 }
 
@@ -71,7 +72,8 @@ void Adrift::userUpdate(float dt) {
     fly_system(dt);
     DifferentialFollower::follower_system(scene);
 
-    bg_system();
+    // bg_system();
+    sky_system.execute(render_system.fetch_camera(scene));
     // debug_start_sample();
     render_system.execute(this);
     // debug_stop_sample();
@@ -133,19 +135,19 @@ void Adrift::fly_system(float dt) {
     trans.rotation.z += av;
 }
 
-void Adrift::bg_init() {
-    auto e = scene.newEntity();
-    scene.addComp<Render>(e, MESH_TILE, SHADER_STARS);
-}
+// void Adrift::bg_init() {
+//     auto e = scene.newEntity();
+//     scene.addComp<Render>(e, MESH_TILE, SHADER_STARS);
+// }
 
-void Adrift::bg_system() {
-    static vec2 pGamePos;
-    Camera* cam = render_system.fetch_camera(scene);
-    shaders[SHADER_STARS].uFloat("uTime", launch_timer.read());
-    shaders[SHADER_STARS].uVec2("uRes", vec2(gl.getWindow().frame.x, gl.getWindow().frame.y));
-    shaders[SHADER_STARS].uFloat("uAspect", gl.getWindow().aspect);
-    shaders[SHADER_STARS].uVec2("uGamePos", vec2(cam->readPos().x, cam->readPos().y) / 5.f);
-    shaders[SHADER_STARS].uVec2("uPGamePos", pGamePos / 5.f);
-    shaders[SHADER_STARS].uFloat("uZoom", ((OrthoCamera*)cam)->readViewWidth() / 10.f);
-    pGamePos = vec2(cam->readPos().x, cam->readPos().y);
-}
+// void Adrift::bg_system() {
+//     static vec2 pGamePos;
+//     Camera* cam = render_system.fetch_camera(scene);
+//     shaders[SHADER_STARS].uFloat("uTime", launch_timer.read());
+//     shaders[SHADER_STARS].uVec2("uRes", vec2(gl.getWindow().frame.x, gl.getWindow().frame.y));
+//     shaders[SHADER_STARS].uFloat("uAspect", gl.getWindow().aspect);
+//     shaders[SHADER_STARS].uVec2("uGamePos", vec2(cam->readPos().x, cam->readPos().y) / 5.f);
+//     shaders[SHADER_STARS].uVec2("uPGamePos", pGamePos / 5.f);
+//     shaders[SHADER_STARS].uFloat("uZoom", ((OrthoCamera*)cam)->readViewWidth() / 10.f);
+//     pGamePos = vec2(cam->readPos().x, cam->readPos().y);
+// }
