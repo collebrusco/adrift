@@ -34,6 +34,7 @@ void Adrift::player_init() {
     scene.addComp<Texture>(e, asp.getTexture());\
 }
 
+#include "util/debug_probe.h"
 void Adrift::userCreate() {
     meshes.reserve(MESH_LAST + 1);
     shaders.reserve(SHADER_LAST + 1);
@@ -48,7 +49,9 @@ void Adrift::userCreate() {
     player_init();
     camera_init();
     bg_init();
+    debug_init(10);
 }
+
 // ================================UP         ================================
 // ================================   DATE    ================================
 // ================================       LOOP================================
@@ -69,7 +72,9 @@ void Adrift::userUpdate(float dt) {
     DifferentialFollower::follower_system(scene);
 
     bg_system();
+    // debug_start_sample();
     render_system.execute(this);
+    // debug_stop_sample();
 }
 
 void Adrift::userDestroy() {
