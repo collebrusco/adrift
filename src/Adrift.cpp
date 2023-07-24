@@ -8,11 +8,12 @@
 
 #include "Adrift.h"
 #include <../res/models.h>
-#include "util/fps.h"
 MESH_DEFINE_ASP
 #include <iostream>
 using namespace glm;
 static Graphics gl;
+
+Adrift::Adrift() : GameDriver("adrift", 1280, 720), fps(8) {}
 
 void Adrift::camera_init() {
     auto e = scene.newEntity();
@@ -47,7 +48,6 @@ void Adrift::userCreate() {
     player_init();
     camera_init();
     bg_init();
-    fps_init(8);
 }
 // ================================UP         ================================
 // ================================   DATE    ================================
@@ -61,7 +61,7 @@ void Adrift::userUpdate(float dt) {
         ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() += window.mouse.scroll.y;
     }
 
-    fps_sample(dt);
+    fps.sample(dt);
     
 //    actionSystem.execute(dt);
     roll_system(dt);

@@ -10,6 +10,7 @@
 #define Adrift_h
 #include "flgl/inc/flgl.h"
 #include "flgl/inc/flgl_math.h"
+#include "util/fps.h"
 #include "ecs/ECS.h"
 #include "stopwatch/Stopwatch.h"
 #include "GameDriver.h"
@@ -21,8 +22,9 @@
 
 class Adrift : public GameDriver {
 public:
-    Adrift() : GameDriver("adrift", 1280, 720) {}
+    Adrift();
 private:
+    FPS fps;
     void userCreate()           override;
     void userUpdate(float dt)   override;
     void userDestroy()          override;

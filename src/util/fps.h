@@ -3,10 +3,21 @@
 #define FPS_h
 #include <stddef.h>
 
-// fps will output average fps 
-// from the last 2^n frames every 2^n frames
-void fps_init(size_t n);
-// call sample with a measurement every frame
-void fps_sample(float dt);
+// fps will output average fps periodically
+
+class FPS {
+	const size_t NUM_SAMPLES;
+	float* buffer;
+	size_t idx;
+	void output();
+public:
+	// output average of last 2^n samples
+	// every 2^n samples
+	FPS(const size_t n);
+	~FPS();
+
+	// call sample with a measurement 
+	void sample(float dt);
+};
 
 #endif // FPS_h
