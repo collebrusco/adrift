@@ -9,6 +9,7 @@
 #include "Adrift.h"
 #include <../res/models.h>
 MESH_DEFINE_ASP
+#include "design/Ships.h"
 #include <iostream>
 using namespace glm;
 static Graphics gl;
@@ -28,10 +29,13 @@ void Adrift::camera_init() {
 void Adrift::player_init() {
     auto e = scene.newEntity();
     player = e;
-    auto const& asp = ShipTypeObject::getShip(SHIP_ASP);
+    // auto const& asp = ShipTypeObject::getShip(SHIP_ASP);
     scene.addComp<Transform>(e);
-    scene.addComp<Render>(e, asp.getMesh(), asp.getShader());
-    scene.addComp<Texture>(e, asp.getTexture());\
+    scene.addComp<Velocity>(e);
+    auto& ship = scene.addComp<Ship>(e, SHIP_ASP);
+    ship.place_on(scene, e);
+    // scene.addComp<Render>(e, asp.getMesh(), asp.getShader());
+    // scene.addComp<Texture>(e, asp.getTexture());
 }
 
 #include "util/debug_probe.h"
@@ -48,7 +52,6 @@ void Adrift::userCreate() {
     gl.setDepthTestEnable(true);
     player_init();
     camera_init();
-    // bg_init();
     sky_system.init();
     debug_init(10);
 }
@@ -70,9 +73,9 @@ void Adrift::userUpdate(float dt) {
 //    actionSystem.execute(dt);
     roll_system(dt);
     fly_system(dt);
+    physics_system.execute(scene);
     DifferentialFollower::follower_system(scene);
 
-    // bg_system();
     sky_system.execute(render_system.fetch_camera(scene));
     // debug_start_sample();
     render_system.execute(this);
@@ -85,7 +88,7 @@ void Adrift::userDestroy() {
 
 void Adrift::roll_system(float dt){
     static const float rmax = 15.f;
-    static const float coeff = 2.;
+    static const float coeff = 2.f;
     auto& win = gl.getWindow();
     auto& trans = scene.getComp<Transform>(player);
     if (win.keyboard[GLFW_KEY_A].down){
@@ -113,41 +116,26 @@ void Adrift::fly_system(float dt) {
     static const float ACCEL_MAX = 0.1f;
     auto& win = gl.getWindow();
     auto& trans = scene.getComp<Transform>(player);
-    static vec3 velo = vec3(0);
-    static float av = 0;
-    if (win.keyboard[GLFW_KEY_A].down) {
-        av += 4 * dt;
-    } else if (win.keyboard[GLFW_KEY_D].down){
-        av -= 4 * dt;
-    }
+    auto& velo = scene.getComp<Velocity>(player);
+    Ship* ship = scene.tryGetComp<Ship>(player);
+    if (ship) {
+        if (win.keyboard[GLFW_KEY_A].down) {
+            ship->input_yaw_left(dt);
+        } else if (win.keyboard[GLFW_KEY_D].down){
+            ship->input_yaw_right(dt);
+        }
 
-    if (win.keyboard[GLFW_KEY_W].down) {
-        velo = velo + glm::vec3((angleToVector(trans.rotation.z + 90.f) * ACCEL_MAX) * dt, 0.f);
-    } else if (win.keyboard[GLFW_KEY_S].down){
-        velo = velo - glm::vec3((angleToVector(trans.rotation.z + 90.f) * ACCEL_MAX) * dt, 0.f);
+        if (win.keyboard[GLFW_KEY_W].down) {
+            ship->input_thrust(dt);
+        } else if (win.keyboard[GLFW_KEY_S].down){
+            ship->input_reverse_thrust(dt);
+        }
+        
+        if (win.keyboard[GLFW_KEY_SPACE].down) {
+            ship->input_brake(dt);
+        }
     }
     
-    if (win.keyboard[GLFW_KEY_SPACE].down) {
-        velo = velo - ((velo / length(velo)) * ACCEL_MAX * dt);
-    }
-    
-    trans.pos += velo;
-    trans.rotation.z += av;
+    // trans.pos += velo.velo;
+    // trans.rotation.z += velo.avelo.z;
 }
-
-// void Adrift::bg_init() {
-//     auto e = scene.newEntity();
-//     scene.addComp<Render>(e, MESH_TILE, SHADER_STARS);
-// }
-
-// void Adrift::bg_system() {
-//     static vec2 pGamePos;
-//     Camera* cam = render_system.fetch_camera(scene);
-//     shaders[SHADER_STARS].uFloat("uTime", launch_timer.read());
-//     shaders[SHADER_STARS].uVec2("uRes", vec2(gl.getWindow().frame.x, gl.getWindow().frame.y));
-//     shaders[SHADER_STARS].uFloat("uAspect", gl.getWindow().aspect);
-//     shaders[SHADER_STARS].uVec2("uGamePos", vec2(cam->readPos().x, cam->readPos().y) / 5.f);
-//     shaders[SHADER_STARS].uVec2("uPGamePos", pGamePos / 5.f);
-//     shaders[SHADER_STARS].uFloat("uZoom", ((OrthoCamera*)cam)->readViewWidth() / 10.f);
-//     pGamePos = vec2(cam->readPos().x, cam->readPos().y);
-// }

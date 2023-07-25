@@ -11,6 +11,7 @@
 
 #include "flgl/inc/flgl.h"
 #include "../components/all.h"
+#include "ecs/ECS.h"
 
 /*
  this class is for use as a type object (flyweight)
@@ -46,8 +47,18 @@ public:
 };
 
 struct Engine {
-    float thrust;
-    Engine(float t);
+    float max_forward_thrust;
+    float max_reverse_thrust;
+    float brake_thrust;
+    float yaw_thrust;
+    float boost_multiplier;
+    Engine() = default;
+    Engine(float, float, float, float, float);
+    static Engine defaultEngine();
+};
+
+struct Weapon {
+    uint32_t stuff; // ??
 };
 
 // hull strength, mass, acceleration, fun stuff! Weapon[], Defense[], System[] ooooh boy
@@ -55,8 +66,40 @@ class Ship {
 private:
     ShipTypeObject const& type;
     Engine engine;
+    ECS* home;
+    entID self;
 public:
     Ship(ShipType st);
+
+    // ship controls
+    void input_thrust(float dt);
+    void input_reverse_thrust(float dt);
+    void input_brake(float dt);
+    void input_yaw_left(float dt);
+    void input_yaw_right(float dt);
+
+
+
+    // emplace / remove from scene
+    void place_on(ECS& scene, entID tar);
+    void place_new(ECS& scene);
+    void remove();
 };
 
 #endif /* ships_h */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

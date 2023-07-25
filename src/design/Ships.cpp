@@ -52,9 +52,74 @@ void ShipTypeObject::setShader(ShaderName s) {
 }
 
 Ship::Ship(ShipType st) : type(ShipTypeObject::getShip(st)),
-                          engine(0.1f)
+                          engine(Engine::defaultEngine()),
+                          home(0)
 {
     
 }
 
-Engine::Engine(float t) : thrust(t) {}
+void Ship::place_on(ECS& scene, entID tar) {
+    home = &scene;
+    self = tar;
+    scene.addComp<Render>(tar, type.getMesh(), type.getShader());
+    scene.addComp<Texture>(tar, type.getTexture());
+}
+
+void Ship::place_new(ECS& scene) {
+    auto e = scene.newEntity();
+    this->place_on(scene, e);
+}
+
+void Ship::remove() {
+    home->removeComp<Render>(self);
+    home->removeComp<Texture>(self);
+    home = 0;
+    self = 0xFFFFFFFFFFFFFFFF;
+}
+
+#include <flgl_math.h>
+void Ship::input_thrust(float dt) {
+    auto& velo = home->getComp<Velocity>(self);
+    auto& trans = home->getComp<Transform>(self);
+    velo.velo = velo.velo + glm::vec3((angleToVector(trans.rotation.z + 90.f) * engine.max_forward_thrust) * dt, 0.f);
+}
+
+void Ship::input_reverse_thrust(float dt) {
+    auto& velo = home->getComp<Velocity>(self);
+    auto& trans = home->getComp<Transform>(self);
+    velo.velo = velo.velo + glm::vec3((angleToVector(trans.rotation.z + 90.f) * engine.max_reverse_thrust) * dt, 0.f);
+}
+
+void Ship::input_brake(float dt) {
+    auto& velo = home->getComp<Velocity>(self).velo;
+    velo = velo - ((velo / length(velo)) * engine.brake_thrust * dt);
+}
+
+void Ship::input_yaw_left(float dt) {
+    auto& avelo = home->getComp<Velocity>(self).avelo;
+    avelo.z += (engine.yaw_thrust * dt);
+}
+
+void Ship::input_yaw_right(float dt) {
+    this->input_yaw_left(-dt);
+}
+
+Engine::Engine(float fwd, float rev, float brk, float yaw, float boost) : 
+               max_forward_thrust(fwd),
+               max_reverse_thrust(rev),
+               brake_thrust(brk),
+               yaw_thrust(yaw),
+               boost_multiplier(boost)
+{}
+
+Engine Engine::defaultEngine() {
+    return Engine(0.1, 0.1, 0.1, 4., 2.);
+}
+
+
+
+
+
+
+
+

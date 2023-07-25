@@ -12,5 +12,6 @@
 #include "render.h"
 #include "texture.h"
 #include "follower.h"
+#include "velocity.h"
 
 #endif /* all_h */
