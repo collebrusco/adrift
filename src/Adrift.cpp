@@ -68,6 +68,22 @@ void Adrift::userUpdate(float dt) {
         ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() += window.mouse.scroll.y;
     }
 
+    // ================================================================
+
+    if (window.keyboard[GLFW_KEY_E].pressed) {
+        std::cout << "switching engine...\n";
+        auto& ship = scene.getComp<Ship>(player);
+        static uint32_t i = 0;
+        static const Engine engines[4] = {
+            Engine(0.03, 0.008, 0.03, 2.),
+            Engine(0.06, 0.01, 0.04, 3.),
+            Engine(0.1, 0.08, 0.1, 4.),
+            Engine(0.33, 0.2, 0.25, 5.5)
+        };
+        ship.engine = engines[++i & 0x03];
+    }
+    // ================================================================
+
     fps.sample(dt);
     
 //    actionSystem.execute(dt);
@@ -135,7 +151,4 @@ void Adrift::fly_system(float dt) {
             ship->input_brake(dt);
         }
     }
-    
-    // trans.pos += velo.velo;
-    // trans.rotation.z += velo.avelo.z;
 }

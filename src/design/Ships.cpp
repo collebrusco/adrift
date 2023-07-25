@@ -24,39 +24,23 @@ ShipTypeObject const& ShipTypeObject::getShip(ShipType type) {
 }
 
 ShipTypeObject::ShipTypeObject(MeshName m, Texture t, ShaderName s){
-    mesh = m; texture = t; shader = s;
-}
+    mesh = m; texture = t; shader = s;}
 
-MeshName ShipTypeObject::getMesh() const {
-    return mesh;
-}
+// get & set
+MeshName ShipTypeObject::getMesh() const {return mesh;}
+Texture ShipTypeObject::getTexture() const {return texture;}
+ShaderName ShipTypeObject::getShader() const {return shader;}
 
-Texture ShipTypeObject::getTexture() const {
-    return texture;
-}
+void ShipTypeObject::setMesh(MeshName m) {mesh = m;}
+void ShipTypeObject::setTexture(Texture t) {texture = t;}
+void ShipTypeObject::setShader(ShaderName s) {shader = s;}
 
-ShaderName ShipTypeObject::getShader() const {
-    return shader;
-}
 
-void ShipTypeObject::setMesh(MeshName m) { 
-    mesh = m;
-}
-
-void ShipTypeObject::setTexture(Texture t) {
-    texture = t;
-}
-
-void ShipTypeObject::setShader(ShaderName s) {
-    shader = s;
-}
 
 Ship::Ship(ShipType st) : type(ShipTypeObject::getShip(st)),
                           engine(Engine::defaultEngine()),
                           home(0)
-{
-    
-}
+{}
 
 void Ship::place_on(ECS& scene, entID tar) {
     home = &scene;
@@ -104,16 +88,15 @@ void Ship::input_yaw_right(float dt) {
     this->input_yaw_left(-dt);
 }
 
-Engine::Engine(float fwd, float rev, float brk, float yaw, float boost) : 
+Engine::Engine(float fwd, float rev, float brk, float yaw) : 
                max_forward_thrust(fwd),
                max_reverse_thrust(rev),
                brake_thrust(brk),
-               yaw_thrust(yaw),
-               boost_multiplier(boost)
+               yaw_thrust(yaw)
 {}
 
 Engine Engine::defaultEngine() {
-    return Engine(0.1, 0.1, 0.1, 4., 2.);
+    return Engine(0.1, 0.1, 0.1, 4.);
 }
 
 

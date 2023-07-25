@@ -46,6 +46,10 @@ public:
     void setShader(ShaderName s);
 };
 
+// struct Boost { 
+    // ooh.. one of these w/ cooldown timer & curve params
+// };
+
 struct Engine {
     float max_forward_thrust;
     float max_reverse_thrust;
@@ -53,7 +57,7 @@ struct Engine {
     float yaw_thrust;
     float boost_multiplier;
     Engine() = default;
-    Engine(float, float, float, float, float);
+    Engine(float, float, float, float);
     static Engine defaultEngine();
 };
 
@@ -64,12 +68,17 @@ struct Weapon {
 // hull strength, mass, acceleration, fun stuff! Weapon[], Defense[], System[] ooooh boy
 class Ship {
 private:
-    ShipTypeObject const& type;
-    Engine engine;
+    // ship entity info
     ECS* home;
     entID self;
+
+    // ship type stats
+    ShipTypeObject const& type;
 public:
     Ship(ShipType st);
+
+    // ship parts
+    Engine engine;
 
     // ship controls
     void input_thrust(float dt);
