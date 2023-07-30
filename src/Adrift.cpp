@@ -103,14 +103,16 @@ void Adrift::userUpdate(float dt) {
         auto& ship = scene.getComp<Ship>(player);
         static uint32_t i = 0;
         static const Engine engines[4] = {
-            Engine(0.01, 0.005, 0.008, 1.),
-            Engine(0.06, 0.01, 0.04, 2.),
+
+            Engine(0.03, 0.008, 0.03, 2.),
+            Engine(0.06, 0.01, 0.04, 3.),
             Engine(0.1, 0.08, 0.1, 4.),
-            Engine(0.33, 0.2, 0.25, 8.)
+            Engine(0.33, 0.2, 0.25, 5.5)
         };
-        ship.engine = engines[i++ & 0x03];
+        ship.engine = engines[++i & 0x03];
     }
     // ================================================================
+
     fps.sample(dt);
     // std::this_thread::sleep_for(std::chrono::microseconds(200000));
 
