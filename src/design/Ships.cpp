@@ -25,7 +25,6 @@ ShipTypeObject const& ShipTypeObject::getShip(ShipType type) {
 
 ShipTypeObject::ShipTypeObject(MeshName m, Texture t, ShaderName s){
     mesh = m; texture = t; shader = s;}
-<<<<<<< HEAD
 
 // get & set
 MeshName ShipTypeObject::getMesh() const {return mesh;}
@@ -36,20 +35,6 @@ void ShipTypeObject::setMesh(MeshName m) {mesh = m;}
 void ShipTypeObject::setTexture(Texture t) {texture = t;}
 void ShipTypeObject::setShader(ShaderName s) {shader = s;}
 
-
-=======
-
-// get & set
-MeshName ShipTypeObject::getMesh() const {return mesh;}
-Texture ShipTypeObject::getTexture() const {return texture;}
-ShaderName ShipTypeObject::getShader() const {return shader;}
-
-void ShipTypeObject::setMesh(MeshName m) {mesh = m;}
-void ShipTypeObject::setTexture(Texture t) {texture = t;}
-void ShipTypeObject::setShader(ShaderName s) {shader = s;}
-
-
->>>>>>> a6e778c96794ed4dbbda7bcd681fa3fc5bbcbb5f
 
 Ship::Ship(ShipType st) : type(ShipTypeObject::getShip(st)),
                           engine(Engine::defaultEngine()),
