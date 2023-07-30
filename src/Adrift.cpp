@@ -21,7 +21,7 @@ void Adrift::camera_init() {
     auto& cam = scene.addComp<OrthoCamera>(e);
     auto& tf = scene.addComp<Transform>(e, cam.readPos());
     scene.addComp<DifferentialFollower>(e, player, 0.3);
-    cam.setViewWidth(5.f);
+    cam.setViewWidth(8.f);
     cam.update();
     render_system.use_camera(e);
 }
@@ -29,13 +29,35 @@ void Adrift::camera_init() {
 void Adrift::player_init() {
     auto e = scene.newEntity();
     player = e;
-    // auto const& asp = ShipTypeObject::getShip(SHIP_ASP);
     scene.addComp<Transform>(e);
     scene.addComp<Velocity>(e);
     auto& ship = scene.addComp<Ship>(e, SHIP_ASP);
     ship.place_on(scene, e);
-    // scene.addComp<Render>(e, asp.getMesh(), asp.getShader());
-    // scene.addComp<Texture>(e, asp.getTexture());
+}
+
+void ai_test::init(ECS& scene) {
+    self = scene.newEntity();
+    home = &scene;
+    home->addComp<Transform>(self, glm::vec3(1., 1., 0.));
+    auto& velo = home->addComp<Velocity>(self);
+    auto& ship = home->addComp<Ship>(self, SHIP_ASP);
+    ship.place_on(scene, self);
+}
+void ai_test::update(float dt) {
+    auto& ship = home->getComp<Ship>(self);
+    auto& trans = home->getComp<Transform>(self);
+    auto& velo = home->getComp<Velocity>(self);
+    static const float targetAV = 1.;
+    static const float targetV = 0.01;
+    if (velo.avelo.z < targetAV)
+        ship.input_yaw_left(dt);
+    else
+        ship.input_yaw_right(dt);
+
+    if (glm::length(velo.velo) < targetV)
+        ship.input_thrust(dt);
+    else
+        ship.input_brake(dt);
 }
 
 #include "util/debug_probe.h"
@@ -54,8 +76,11 @@ void Adrift::userCreate() {
     camera_init();
     sky_system.init();
     debug_init(10);
+    test.init(scene);
 }
 
+#include <thread>
+#include <chrono>
 // ================================UP         ================================
 // ================================   DATE    ================================
 // ================================       LOOP================================
@@ -65,7 +90,10 @@ void Adrift::userUpdate(float dt) {
         gl.setWireframe(toggle ^= 0x01);
     }
     if (window.mouse.scroll.y != 0.f) {
-        ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() += window.mouse.scroll.y;
+        auto newVW = ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() + window.mouse.scroll.y;
+        if (newVW < 64 && newVW > 2) {
+            ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() = newVW;
+        }
     }
 
     // ================================================================
@@ -75,18 +103,19 @@ void Adrift::userUpdate(float dt) {
         auto& ship = scene.getComp<Ship>(player);
         static uint32_t i = 0;
         static const Engine engines[4] = {
-            Engine(0.03, 0.008, 0.03, 2.),
-            Engine(0.06, 0.01, 0.04, 3.),
+            Engine(0.01, 0.005, 0.008, 1.),
+            Engine(0.06, 0.01, 0.04, 2.),
             Engine(0.1, 0.08, 0.1, 4.),
-            Engine(0.33, 0.2, 0.25, 5.5)
+            Engine(0.33, 0.2, 0.25, 8.)
         };
-        ship.engine = engines[++i & 0x03];
+        ship.engine = engines[i++ & 0x03];
     }
     // ================================================================
-
     fps.sample(dt);
-    
+    // std::this_thread::sleep_for(std::chrono::microseconds(200000));
+
 //    actionSystem.execute(dt);
+    // test.update(dt);
     roll_system(dt);
     fly_system(dt);
     physics_system.execute(scene);

@@ -65,20 +65,20 @@ void Ship::remove() {
 void Ship::input_thrust(float dt) {
     auto& velo = home->getComp<Velocity>(self);
     auto& trans = home->getComp<Transform>(self);
-    velo.velo = velo.velo + glm::vec3((angleToVector(trans.rotation.z + 90.f) * engine.max_forward_thrust) * dt, 0.f);
+    velo.velo = velo.velo + glm::vec3((angleToVector(trans.rotation.z + 90.f) * engine.max_forward_thrust) * dt, 0.f);;
 }
 
 void Ship::input_reverse_thrust(float dt) {
     auto& velo = home->getComp<Velocity>(self);
     auto& trans = home->getComp<Transform>(self);
-    velo.velo = velo.velo + glm::vec3((angleToVector(trans.rotation.z + 90.f) * engine.max_reverse_thrust) * dt, 0.f);
+    velo.velo = velo.velo - glm::vec3((angleToVector(trans.rotation.z + 90.f) * engine.max_reverse_thrust) * dt, 0.f);
 }
 
 void Ship::input_brake(float dt) {
     auto& velo = home->getComp<Velocity>(self).velo;
     velo = velo - ((velo / length(velo)) * engine.brake_thrust * dt);
 }
-
+using namespace std;
 void Ship::input_yaw_left(float dt) {
     auto& avelo = home->getComp<Velocity>(self).avelo;
     avelo.z += (engine.yaw_thrust * dt);

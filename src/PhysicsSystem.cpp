@@ -1,5 +1,5 @@
 #include "PhysicsSystem.h"
-
+#include <iostream>
 void PhysicsSystem::execute(ECS& scene) {
 	for (auto e : scene.view<Velocity, Transform>()) {
 		auto& trans = scene.getComp<Transform>(e);

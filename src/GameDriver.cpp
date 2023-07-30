@@ -8,6 +8,7 @@
 
 #include "GameDriver.h"
 #include "components/all.h"
+#include <cmath>
 static Graphics gl;
 
 GameDriver::GameDriver(const char *title, uint32_t w, uint32_t h) : window(gl.initCreateWindow(title, w, h)),
@@ -29,13 +30,16 @@ bool GameDriver::create() {
     userCreate();
     return true;
 }
-
+#include <iostream>
 void GameDriver::start() {
     while (!window.should_close()) {
         gl.clear();
         userUpdate(dt);
         window.update();
         dt = delta_timer.stop_reset_start();
+        if (std::isinf(dt) || std::isnan(dt)){
+            dt = 1.f / 80.f; //TODO: hate this...
+        }
     }
     exit();
 }

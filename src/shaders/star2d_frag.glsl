@@ -146,17 +146,6 @@ float green_noise(float m, float dist) {
 
 #define STAR_COLOR (vec4(0.7f, 0.6f, 0.67f, 1.f) * (perlin(i_res * 50.f, 0.2f) + 0.3))
 bool star() {
-//    float sn = 0;
-//    int i;
-//    bool res = false;
-//    for (i = 1; i < 3; i++){
-//        float sn = perlin(i_res * 10 * i, 100.f, (uGamePos + vec2(0.5)) * float(i), vec2(float(i+1) * 2.), uRotation);
-//        res = (sn > 0.7);
-////        sn += perlin(i_res, 0.02, (uGamePos + vec2(0.5)) / float(i * 80), vec2(50.) * i, uRotation);
-////        return (sn > 0.7);
-//    }
-//    return res;
-//    bool star = false;
     for (int i = 1; i < 3; i++) {
         float sn = perlin(i_res + ivec2(i, -i), 0.02, (uGamePos + vec2(0.5)) / vec2(float((i<<1) + 200)), vec2(300.f / float((i))));
         if (sn > 0.7) {
@@ -168,7 +157,7 @@ bool star() {
 
 #define DUST_COLOR vec4(0.502f, 0.5f, 0.505f, 1.f)
 bool dust(vec2 gPos) {
-    float sn = perlin(i_res,                0.02, (gPos + vec2(0.5)) / vec2(5.f * uZoom), vec2(150.f * uZoom));
+    float sn = perlin(i_res,                0.02, (gPos + vec2(0.5)) / vec2(5.f * uZoom), vec2(75.f * uZoom));
     if (sn < 0.685) { return false; }
     float sn1 = perlin(i_res, 0.02, (gPos + vec2(0.22)) / vec2(5.f * uZoom), vec2(150.f * uZoom));
     return (sn1 > 0.65);
@@ -185,15 +174,53 @@ bool dust() {
     return false;
 }
 
+bool distanceToIntLessThan(float x, float d) {
+    return abs(x - floor(x)) < d;
+}
+
+#define GRID_COLOR vec4(0.5, 0.5, 0.55, 1.)
+bool grid(float div) {
+    vec2 pos_in_game_coords = (uGamePos);
+    pos_in_game_coords += vec2((n_res.x) - 0.5, (n_res.y / uAspect) - (1/(2.f*uAspect))) * uZoom;
+
+    if (div != 0.f) {
+       pos_in_game_coords /= div;
+    }
+    
+    if (distanceToIntLessThan(pos_in_game_coords.x, 0.015) || 
+        distanceToIntLessThan(pos_in_game_coords.y, 0.015)) {
+        return true;
+    }
+    return false;
+}
+
+float grid() {
+    if (uZoom < 24.f) {
+        if (grid(0.f)) {
+            return 1.f;
+        }
+        return 0.f;
+    }
+    if (grid(4.f)) {
+        return 1.f;
+    }
+    if (grid(0.f)) {
+        return 0.4f;
+    }
+    return 0.f;
+}
+
 void main(){
-    vec4 clr = vec4(1.);
-    float sn = perlin(i_res * 100, 0.02, (uGamePos + vec2(0.5)), vec2(2.));
-    clr.xyz = vec3(0);
+    vec4 clr = vec4(0., 0., 0., 1.);
+    float gr = grid();
     if (star()){
         clr = STAR_COLOR;
     } else
         if (dust()) {
         clr = DUST_COLOR;
+    } else 
+        if (gr != 0.f) {
+        clr = GRID_COLOR * gr;
     } else {
         const float bt = 4;
         clr.r = red_noise(0.1f * bt, 10.f);

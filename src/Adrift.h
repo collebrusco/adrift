@@ -22,6 +22,14 @@
 #include "SkySystem.h"
 #include "ActionSystem.h"
 
+class ai_test {
+    entID self;
+    ECS* home;
+public:
+    void init(ECS& scene);
+    void update(float dt);
+};
+
 class Adrift : public GameDriver {
 public:
     Adrift();
@@ -35,6 +43,7 @@ private:
     RenderSystem render_system;
     SkySystem sky_system;
     PhysicsSystem physics_system;
+    ai_test test;
 
     void camera_init();
     void player_init();

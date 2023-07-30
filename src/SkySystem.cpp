@@ -23,8 +23,8 @@ void SkySystem::execute(Camera* cam) {
    home.shaders[SHADER_STARS].uFloat("uTime", home.launch_timer.read());
    home.shaders[SHADER_STARS].uVec2("uRes", vec2(home.window.frame.x, home.window.frame.y));
    home.shaders[SHADER_STARS].uFloat("uAspect", home.window.aspect);
-   home.shaders[SHADER_STARS].uVec2("uGamePos", vec2(cam->readPos().x, cam->readPos().y) / 5.f);
-   home.shaders[SHADER_STARS].uVec2("uPGamePos", pGamePos / 5.f);
-   home.shaders[SHADER_STARS].uFloat("uZoom", ((OrthoCamera*)cam)->readViewWidth() / 10.f);
+   home.shaders[SHADER_STARS].uVec2("uGamePos", vec2(cam->readPos().x, cam->readPos().y));
+   home.shaders[SHADER_STARS].uVec2("uPGamePos", pGamePos);
+   home.shaders[SHADER_STARS].uFloat("uZoom", ((OrthoCamera*)cam)->readViewWidth());
    pGamePos = vec2(cam->readPos().x, cam->readPos().y);
 }

@@ -31,6 +31,7 @@ void RenderSystem::sync_camera(ECS& scene) {
 
 void RenderSystem::execute(GameDriver* state) {
     sync_camera(state->scene);
+    uint32_t i = 0;
     for (auto e : state->scene.view<Render>()) {
         auto& render = state->scene.getComp<Render>(e);
         if (Transform* trans = state->scene.tryGetComp<Transform>(e))
