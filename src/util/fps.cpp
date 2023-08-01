@@ -23,13 +23,16 @@ void FPS::output() {
 	std::cout << std::fixed << std::setprecision(1) << "FPS: " << 1 / total << "\n";
 }
 
+static uint32_t sorryaboutthis = 0;
+
 void FPS::sample(float dt) {
 	if (idx) {
 		buffer[idx--] = dt;
 	} else {
 		buffer[idx] = dt;
 		idx = NUM_SAMPLES - 1;
-		output();
+		if (!(++sorryaboutthis & 0x03))
+			output();
 	}
 }
 

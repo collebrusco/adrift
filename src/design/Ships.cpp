@@ -75,9 +75,10 @@ void Ship::input_reverse_thrust(float dt) {
 
 void Ship::input_brake(float dt) {
     auto& velo = home->getComp<Velocity>(self).velo;
-    velo = velo - ((velo / length(velo)) * engine.brake_thrust * dt);
+    if (glm::length(velo) > 0.001)
+        velo = velo - ((velo / length(velo)) * engine.brake_thrust * dt);
 }
-using namespace std;
+
 void Ship::input_yaw_left(float dt) {
     auto& avelo = home->getComp<Velocity>(self).avelo;
     avelo.z += (engine.yaw_thrust * dt);

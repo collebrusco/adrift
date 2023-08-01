@@ -226,7 +226,7 @@ void main(){
         clr.r = red_noise(0.1f * bt, 10.f);
         clr.g = green_noise(0.05f * bt, 12.f);
         clr.b = blue_noise(0.1f * bt, 4.f);
-        clr.xyz = max(vec3(0.f), clr.xyz - 0.15);
+        clr.stp = max(vec3(0.f), clr.xyz - 0.15);
     }
     
     outColor = clr;

@@ -14,7 +14,7 @@ MESH_DEFINE_ASP
 using namespace glm;
 static Graphics gl;
 
-Adrift::Adrift() : GameDriver("adrift", 1280, 720), fps(8), sky_system(this) {}
+Adrift::Adrift() : GameDriver("adrift", 1280, 720), fps(6), sky_system(this) {}
 
 void Adrift::camera_init() {
     auto e = scene.newEntity();
