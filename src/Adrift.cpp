@@ -95,6 +95,9 @@ void Adrift::userUpdate(float dt) {
             ((OrthoCamera*)render_system.fetch_camera(scene))->getViewWidth() = newVW;
         }
     }
+    if (window.keyboard[GLFW_KEY_ESCAPE].pressed) {
+        window.close();
+    }
 
     // ================================================================
 
