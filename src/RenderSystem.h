@@ -13,7 +13,11 @@ class RenderSystem {
 private:
     entID camera;
     void sync_camera(ECS& scene);
+    Framebuffer preprocess_buffer;
+    Shader post_processing_shader;
+    void resize_preprocess_buffer();
 public:
+    RenderSystem();
     void use_camera(entID e);
     Camera* fetch_camera(ECS& scene);
     void execute(GameDriver* state);

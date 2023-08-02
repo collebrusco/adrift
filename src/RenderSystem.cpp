@@ -2,6 +2,10 @@
 
 static Graphics gl;
 
+RenderSystem::RenderSystem() {
+    post_processing_shader = gl.loader.UploadShader("fullscreen_vert", "tex_frag.glsl");
+}
+
 void RenderSystem::use_camera(entID cam) {
     camera = cam;
 }
@@ -29,8 +33,21 @@ void RenderSystem::sync_camera(ECS& scene) {
     });
 }
 
+void RenderSystem::resize_preprocess_buffer() {
+    auto& win = gl.getWindow();
+    if (!preprocess_buffer.active()) {        
+        preprocess_buffer.create(win.frame.x, win.frame.y, true);
+    }
+    if (win.frame.x != preprocess_buffer.w() || win.frame.y != preprocess_buffer.h()) {
+        preprocess_buffer.destroy();
+        preprocess_buffer.create(win.frame.x, win.frame.y, true);
+    }
+}
+
 void RenderSystem::execute(GameDriver* state) {
     sync_camera(state->scene);
+    // resize_preprocess_buffer();
+    preprocess_buffer.bind();
     uint32_t i = 0;
     for (auto e : state->scene.view<Render>()) {
         auto& render = state->scene.getComp<Render>(e);
@@ -44,6 +61,11 @@ void RenderSystem::execute(GameDriver* state) {
         state->shaders[render.shader].bind();
         gl.DrawMesh(state->meshes[render.vao]);
     }
+    preprocess_buffer.unbind();
+    post_processing_shader.uInt("uTexslot", preprocess_buffer.texture_id());
+    post_processing_shader.uIVec2("uSpriteWH", glm::ivec2(1024, 1024));
+    post_processing_shader.uVec2("uSpriteSheetPos", glm::vec2(0.f));
+    gl.std.drawTile();
 }
 
 
