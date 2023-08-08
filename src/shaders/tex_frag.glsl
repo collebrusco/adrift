@@ -8,7 +8,7 @@ uniform sampler2D uTexslot;
 uniform ivec2 uSpriteWH;
 uniform vec2 uSpriteSheetCoords;
 
-out vec4 outColor;
+layout (location = 0) out vec3 outColor;
 in vec2 iUV;
 
 //const float amount = 200.f;
@@ -24,5 +24,5 @@ void main(){
         discard;
     }
     //apply additional shading here...
-    outColor = pixelColor;
+    outColor = pixelColor.xyz;
 }

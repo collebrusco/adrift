@@ -14,7 +14,6 @@ private:
     entID camera;
     void sync_camera(ECS& scene);
     Framebuffer preprocess_buffer;
-    Shader post_processing_shader;
     void resize_preprocess_buffer();
 public:
     RenderSystem();

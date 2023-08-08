@@ -15,10 +15,7 @@ GameDriver::GameDriver(const char *title, uint32_t w, uint32_t h) : window(gl.in
                                                                     delta_timer(ftime::SECONDS),
                                                                     launch_timer(ftime::SECONDS),
                                                                     dt(1.f/60.f)
-{
-    gl.loader.setAssetPath("res/");
-    gl.loader.setShaderPath("src/shaders/");
-}
+{}
 
 void GameDriver::exit() {
     userDestroy();

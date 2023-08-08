@@ -2,9 +2,7 @@
 
 static Graphics gl;
 
-RenderSystem::RenderSystem() {
-    post_processing_shader = gl.loader.UploadShader("fullscreen_vert", "tex_frag.glsl");
-}
+RenderSystem::RenderSystem() {}
 
 void RenderSystem::use_camera(entID cam) {
     camera = cam;
@@ -32,23 +30,34 @@ void RenderSystem::sync_camera(ECS& scene) {
         s.uMat4("uProj", cam->proj());
     });
 }
-
+#include <iostream>
 void RenderSystem::resize_preprocess_buffer() {
     auto& win = gl.getWindow();
+    std::cout << "got window\n";
     if (!preprocess_buffer.active()) {        
+        std::cout << "checked if buffer active, no\n";
         preprocess_buffer.create(win.frame.x, win.frame.y, true);
+        std::cout << "created at " << preprocess_buffer.w() << " by " << preprocess_buffer.h() << "\n";
     }
-    if (win.frame.x != preprocess_buffer.w() || win.frame.y != preprocess_buffer.h()) {
-        preprocess_buffer.destroy();
-        preprocess_buffer.create(win.frame.x, win.frame.y, true);
-    }
+    assert(preprocess_buffer.active());
+    // if (win.frame.x != preprocess_buffer.w() || win.frame.y != preprocess_buffer.h()) {
+    //     std::cout << "recreating:\n";
+    //     preprocess_buffer.destroy();
+    //     std::cout << "destroyed,\n";
+    //     preprocess_buffer.create(win.frame.x, win.frame.y, true);
+    //     std::cout << "recreated.\n";
+    // }
 }
 
 void RenderSystem::execute(GameDriver* state) {
     sync_camera(state->scene);
-    // resize_preprocess_buffer();
+    resize_preprocess_buffer();
+    std::cout << "binding framebuffer...\n";
     preprocess_buffer.bind();
+    glViewport(0, 0, preprocess_buffer.w(), preprocess_buffer.h());
+
     uint32_t i = 0;
+    std::cout << "drawing to framebuffer...\n";
     for (auto e : state->scene.view<Render>()) {
         auto& render = state->scene.getComp<Render>(e);
         if (Transform* trans = state->scene.tryGetComp<Transform>(e))
@@ -62,9 +71,15 @@ void RenderSystem::execute(GameDriver* state) {
         gl.DrawMesh(state->meshes[render.vao]);
     }
     preprocess_buffer.unbind();
-    post_processing_shader.uInt("uTexslot", preprocess_buffer.texture_id());
-    post_processing_shader.uIVec2("uSpriteWH", glm::ivec2(1024, 1024));
-    post_processing_shader.uVec2("uSpriteSheetPos", glm::vec2(0.f));
+    std::cout << "drawing to viewport, tex slot " << preprocess_buffer.slot() << "\n";
+    state->shaders[SHADER_POSTPROCESS].bind();
+    state->shaders[SHADER_POSTPROCESS].uInt("uTexslot", preprocess_buffer.slot());
+    glViewport(0, 0, preprocess_buffer.w(), preprocess_buffer.h());
+    glBindTexture(GL_TEXTURE_2D, preprocess_buffer.id());
+    glActiveTexture(GL_TEXTURE0 + preprocess_buffer.slot());
+    GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
+    glDrawBuffers(1, DrawBuffers);  
+    std::cout << "draw:\n";
     gl.std.drawTile();
 }
 

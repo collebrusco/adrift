@@ -9,7 +9,7 @@
     uRes:       w/h of screen in pixels
     uAspect:    aspect ratio of screen (w / h)
  */
-out vec4 outColor;
+layout (location = 0) out vec3 outColor;
 in vec2 iUV;
 in vec3 iPos;
 
@@ -229,5 +229,5 @@ void main(){
         clr.stp = max(vec3(0.f), clr.xyz - 0.15);
     }
     
-    outColor = clr;
+    outColor = clr.xyz;
 }

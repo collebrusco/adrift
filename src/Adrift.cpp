@@ -69,6 +69,7 @@ void Adrift::userCreate() {
     meshes[MESH_TILE] = gl.std.getTileMesh();
     shaders[SHADER_SHIP] = gl.loader.UploadShader("mvp_vert", "tex_frag");
     shaders[SHADER_STARS] = gl.loader.UploadShader("fullscreen_vert", "star2d_frag");
+    shaders[SHADER_POSTPROCESS] = gl.loader.UploadShader("fullscreen_vert", "post_process_template_frag");
     textures[TEX_ATLAS] = gl.loader.UploadTexture("atlas", true);
     ShipTypeObject::initShips();
     gl.setDepthTestEnable(true);
@@ -97,6 +98,12 @@ void Adrift::userUpdate(float dt) {
     }
     if (window.keyboard[GLFW_KEY_ESCAPE].pressed) {
         window.close();
+    }
+
+    {
+        // static uint32_t a = 0;
+        // a++;
+        // if (a > 12 && !window.keyboard[GLFW_KEY_SPACE].down) { gl.destroy(); assert(false);}
     }
 
     // ================================================================

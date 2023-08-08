@@ -10,9 +10,10 @@
 
 enum ShaderName {
     SHADER_SHIP = 0,
-    SHADER_STARS
+    SHADER_STARS,
+    SHADER_POSTPROCESS
 };
-#define SHADER_LAST SHADER_STARS
+#define SHADER_LAST SHADER_POSTPROCESS
 
 enum MeshName {
     MESH_ASP = 0,

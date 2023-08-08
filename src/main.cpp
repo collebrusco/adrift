@@ -9,6 +9,8 @@
 #include "Adrift.h"
 
 int main(int argc, const char * argv[]) {
+    Graphics::loader.setAssetPath("res/");
+    Graphics::loader.setShaderPath("src/shaders/");
     Adrift game;
     if (game.create())
         game.start();

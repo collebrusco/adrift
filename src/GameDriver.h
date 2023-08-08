@@ -23,7 +23,7 @@ public:
 
     std::vector<Shader> shaders;
     std::vector<MeshDetails> meshes;
-    std::vector<TEXTURE_SLOT> textures;
+    std::vector<texture_slot_t> textures;
     Window& window;
 
     ECS scene;
