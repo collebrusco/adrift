@@ -49,7 +49,7 @@ adrift: $(OBJ) $(LIBOBJ)
 	$(CPP) -o $@ -c $< $(CFLAGS)
 
 clean:
-	rm -rf $(BIN) $(OBJ) ./lib/flgl/lib/glfw/CMakeCache.txt
+	rm -rf $(BIN) $(OBJ) $(LIBOBJ) ./lib/flgl/lib/glfw/CMakeCache.txt
 
 trim:
 	rm -rf ./lib/flgl/lib/glfw/tests ./lib/flgl/lib/glfw/examples ./lib/flgl/lib/glm/test

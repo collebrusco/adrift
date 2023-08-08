@@ -24,5 +24,6 @@ void main(){
         discard;
     }
     //apply additional shading here...
+    outColor = texture(uTexslot, normTexCoords).xyz;
     outColor = pixelColor.xyz;
 }

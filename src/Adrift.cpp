@@ -71,6 +71,7 @@ void Adrift::userCreate() {
     shaders[SHADER_STARS] = gl.loader.UploadShader("fullscreen_vert", "star2d_frag");
     shaders[SHADER_POSTPROCESS] = gl.loader.UploadShader("fullscreen_vert", "post_process_template_frag");
     textures[TEX_ATLAS] = gl.loader.UploadTexture("atlas", true);
+    std::cout << textures[TEX_ATLAS] << " is atlas slot\n";
     ShipTypeObject::initShips();
     gl.setDepthTestEnable(true);
     player_init();
