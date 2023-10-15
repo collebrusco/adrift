@@ -14,9 +14,11 @@ private:
     entID camera;
     void sync_camera(ECS& scene);
     Framebuffer preprocess_buffer;
+    Framebuffer test_buffer;
     void resize_preprocess_buffer();
 public:
     RenderSystem();
+    void init();
     void use_camera(entID e);
     Camera* fetch_camera(ECS& scene);
     void execute(GameDriver* state);

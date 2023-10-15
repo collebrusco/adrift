@@ -72,12 +72,12 @@ float perlin(vec2 pos, float rotation, vec2 offset, vec2 scale, float cam_rotati
     pos += offset;
     pos *= scale;
     
-//    vec2 d = vec2(0.5 * uAspect, 0.5) + offset + uGamePos;
-//
-//    float nx =      ((pos.x - d.x) * cos(cam_rotation)) - ((d.y - pos.y) * sin(cam_rotation)) + d.x;
-//    float ny =      ((d.y - pos.y) * cos(cam_rotation)) + ((pos.x - d.x) * sin(cam_rotation)) + d.y;
-//
-//    pos.x = nx; pos.y = ny;
+   // vec2 d = vec2(0.5 * uAspect, 0.5) + offset + uGamePos;
+
+   // float nx =      ((pos.x - d.x) * cos(cam_rotation)) - ((d.y - pos.y) * sin(cam_rotation)) + d.x;
+   // float ny =      ((d.y - pos.y) * cos(cam_rotation)) + ((pos.x - d.x) * sin(cam_rotation)) + d.y;
+
+   // pos.x = nx; pos.y = ny;
     
     // establish grid
     int x0 = int(floor(pos.x));
@@ -209,10 +209,13 @@ float grid() {
     }
     return 0.f;
 }
-
+uniform int u_grid;
 void main(){
     vec4 clr = vec4(0., 0., 0., 1.);
-    float gr = grid();
+    float gr = 0.f;
+    if (u_grid != 0) {
+        gr = grid();
+    }
     if (star()){
         clr = STAR_COLOR;
     } else

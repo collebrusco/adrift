@@ -69,11 +69,12 @@ void Adrift::userCreate() {
     meshes[MESH_TILE] = gl.std.getTileMesh();
     shaders[SHADER_SHIP] = gl.loader.UploadShader("mvp_vert", "tex_frag");
     shaders[SHADER_STARS] = gl.loader.UploadShader("fullscreen_vert", "star2d_frag");
-    shaders[SHADER_POSTPROCESS] = gl.loader.UploadShader("fullscreen_vert", "post_process_template_frag");
+    shaders[SHADER_POSTPROCESS] = gl.loader.UploadShader("fullscreen_vert", "post_process_frag");
     textures[TEX_ATLAS] = gl.loader.UploadTexture("atlas", true);
     std::cout << textures[TEX_ATLAS] << " is atlas slot\n";
     ShipTypeObject::initShips();
     gl.setDepthTestEnable(true);
+    render_system.init();
     player_init();
     camera_init();
     sky_system.init();
@@ -81,8 +82,8 @@ void Adrift::userCreate() {
     test.init(scene);
 }
 
-#include <thread>
-#include <chrono>
+// #include <thread>
+// #include <chrono>
 // ================================UP         ================================
 // ================================   DATE    ================================
 // ================================       LOOP================================
@@ -145,7 +146,7 @@ void Adrift::userDestroy() {
 }
 
 void Adrift::roll_system(float dt){
-    static const float rmax = 15.f;
+    static const float rmax = 25.f;
     static const float coeff = 2.f;
     auto& win = gl.getWindow();
     auto& trans = scene.getComp<Transform>(player);
