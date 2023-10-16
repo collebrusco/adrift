@@ -1,5 +1,6 @@
 # Adrift
-Space game concept written with OpenGL & C++. 3D ships and fun shaders!   
+Space game concept written with OpenGL & C++. 3D ships and fun shaders!  
+![Screenshot](sc.png)
 Adrift uses [my graphics library](https://github.com/collebrusco/flgl) which is based on OpenGL & glfw.
 
 ## Building
